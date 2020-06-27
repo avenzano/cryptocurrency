@@ -2,6 +2,7 @@ package org.testapp.cryptowallet.service;
 
 import java.util.List;
 
+import org.testapp.cryptowallet.model.CryptoWallet;
 import org.testapp.cryptowallet.model.Deposit;
 import org.testapp.cryptowallet.model.User;
 
@@ -22,5 +23,9 @@ public interface UserService {
 	Deposit deposit(User user, Deposit deposit);
 
 	List<Deposit> getDeposits(String id);
+
+	void clear(String type);
+
+	List<CryptoWallet> getWallets(String username);
 
 }

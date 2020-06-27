@@ -35,21 +35,19 @@ public class CryptoWalletServiceImpl implements CryptoWalletService {
 	private CryptoCurrencyDao currencyDao;
 
 	@Override
-	public CryptoWallet findById(String id) {
-		return walletDao.findById(id);
-	}
-	
-	@Override
 	@Cacheable("wallets")
 	public CryptoWallet getById(String id) {
 		return walletDao.getById(id);
 	}
 	
 	@Override
+//	@CacheEvict(value="wallets", key = "#wallet.username")
 	public CryptoWallet create(CryptoWallet wallet) {
 		// TODO validations
 		wallet.setId(createUniqueId());
 		wallet.setCreated(LocalDateTime.now());
+		User owner = userDao.getByUsername(wallet.getUsername());
+		owner.getWallets().add(wallet);
 		return walletDao.save(wallet);
 	}
 	

@@ -44,5 +44,9 @@ public class Account {
 	public void subtract(BigDecimal amount) {
 		balance = balance.subtract(amount);
 	}
+
+	public Object clear() {
+		return balance = BigDecimal.ZERO;
+	}
 	
 }

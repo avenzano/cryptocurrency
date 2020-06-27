@@ -49,4 +49,24 @@ public class UserDaoImpl implements UserDao {
 		return user;
 	}
 	
+	@Override
+	public void clear() {
+		usersByUsername.clear();
+	}
+
+	@Override
+	public void clearAccounts() {
+		usersByUsername.values().forEach( u -> { 
+			u.getAccount().clear();
+			u.getDeposits().clear();
+		});
+	}
+
+	@Override
+	public void clearWallets() {
+		usersByUsername.values().forEach( u -> { 
+			u.getWallets().clear();
+		});
+	}
+	
 }

@@ -7,5 +7,11 @@ public interface UserDao {
 	User save(User usr);
 	
 	User getByUsername(String username);
+
+	void clear();
+
+	void clearAccounts();
+
+	void clearWallets();
 	
 }

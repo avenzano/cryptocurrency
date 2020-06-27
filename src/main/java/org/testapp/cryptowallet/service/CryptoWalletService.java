@@ -10,7 +10,7 @@ import org.testapp.cryptowallet.model.TransferOrder;
 
 public interface CryptoWalletService {
 
-	CryptoWallet findById(String id);
+	CryptoWallet getById(String id);
 
 	CryptoWallet create(CryptoWallet newWallet);
 
@@ -21,8 +21,6 @@ public interface CryptoWalletService {
 	BuyOrder execute(String id, BuyOrder order);
 
 	TransferOrder execute(String walltId, TransferOrder order);
-
-	CryptoWallet getById(String id);
 
 	List<InOrder> getInOrdersById(String id);
 

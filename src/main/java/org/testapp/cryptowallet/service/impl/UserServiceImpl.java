@@ -11,8 +11,10 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.testapp.cryptowallet.dao.CryptoCurrencyDao;
+import org.testapp.cryptowallet.dao.CryptoWalletDao;
 import org.testapp.cryptowallet.dao.UserDao;
 import org.testapp.cryptowallet.model.Account;
+import org.testapp.cryptowallet.model.CryptoWallet;
 import org.testapp.cryptowallet.model.Deposit;
 import org.testapp.cryptowallet.model.SimpleCurrency;
 import org.testapp.cryptowallet.model.User;
@@ -26,6 +28,10 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private CryptoCurrencyDao currencyDao;
+	
+	// required for clearing
+	@Autowired
+	private CryptoWalletDao walletDao;
 	
 	@Override
 	@Cacheable("users")
@@ -78,6 +84,32 @@ public class UserServiceImpl implements UserService {
 	public List<Deposit> getDeposits(String username) {
 		User user = get(username);
 		return user.getDeposits();
+	}
+
+	@Override
+	@Cacheable(value="wallets")
+	public List<CryptoWallet> getWallets(String username) {
+		User user = get(username);
+		return user.getWallets();
+	}
+
+	@Override
+	@CacheEvict(allEntries = true, cacheNames = {"wallets", "users", "deposits", "inOrders", "outOrders"})
+	public void clear(String type) {
+		if ( "users".equalsIgnoreCase(type) || "all".equalsIgnoreCase(type) ) {
+			userDao.clear();
+			walletDao.clear();
+		}
+		if ( "wallets".equalsIgnoreCase(type)) {
+			userDao.clearWallets();
+			walletDao.clear();
+		}
+		if ( "accountCurrencies".equalsIgnoreCase(type) || "allCurrencies".equalsIgnoreCase(type) ) {
+			userDao.clearAccounts();
+		}
+		if ( "walletCurrencies".equalsIgnoreCase(type) || "allCurrencies".equalsIgnoreCase(type) ) {
+			walletDao.clearValues();
+		}
 	}
 
 }

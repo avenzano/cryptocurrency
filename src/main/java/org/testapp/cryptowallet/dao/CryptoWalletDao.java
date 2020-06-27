@@ -20,4 +20,8 @@ public interface CryptoWalletDao {
 	CryptoWallet getById(String walletId);
 
 	void remove(CryptoWallet wallet);
+
+	void clear();
+
+	void clearValues();
 }

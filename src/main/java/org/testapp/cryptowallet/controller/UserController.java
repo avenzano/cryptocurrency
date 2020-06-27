@@ -109,8 +109,15 @@ public class UserController {
 			@RequestParam(value="page", defaultValue="1") int page,
 			@ApiParam(value="The number of returned deposits")
 			@RequestParam(value="size", defaultValue="10") int size) {
-		User user = userService.get(id);
-		return createPage(user.getWallets(), page, size);
+		return createPage(userService.getWallets(id), page, size);
+	}
+	
+	@ApiOperation("Clear entities in the 'database' (for testing purposes)")
+	@PostMapping("/clearData")
+	public void clearData(
+			@ApiParam(value="What to clear", allowableValues = "all, wallets, walletCurrencies, accountCurrencies, allCurrencies")
+			@RequestParam(value="type", defaultValue="all") String type) {
+		userService.clear(type);
 	}
 
 }

@@ -3,6 +3,7 @@ package org.testapp.cryptowallet.dao.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Component;
 import org.testapp.cryptowallet.dao.CryptoWalletDao;
@@ -45,6 +46,18 @@ public class CryptoWalletDaoImpl implements CryptoWalletDao {
 	@Override
 	public void remove(CryptoWallet wallet) {
 		cache.remove(wallet.getId());
+	}
+
+	@Override
+	public void clear() {
+		cache.clear();
+	}
+	
+	@Override
+	public void clearValues() {
+		cache.values().forEach( w -> {
+			w.getCurrencies().clear();
+		});
 	}
 	
 	
