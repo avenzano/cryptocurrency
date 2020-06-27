@@ -1,0 +1,6 @@
+applications:
+- name: cryptowallet
+  memory: 1GB
+  path: target/cryptowallet-0.0.1-SNAPSHOT.jar 
+  buildpacks:
+  - java_buildpack
