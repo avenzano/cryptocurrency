@@ -30,5 +30,5 @@ public class CryptoCurrencyServiceImpl implements CryptoCurrencyService {
 	public Page<CryptoCurrency> getAvailableCurrencies2(int offset, int size) {
 		return cryptoCurrencyDao.getAll(offset, size);
 	}
-
+	
 }

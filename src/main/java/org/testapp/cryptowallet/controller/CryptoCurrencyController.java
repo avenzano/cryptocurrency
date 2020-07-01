@@ -43,4 +43,5 @@ public class CryptoCurrencyController {
 		int offset = (page - 1) * size;
 		return cryptoCurrencyService.getAvailableCurrencies2(offset, size);
 	}
+	
 }

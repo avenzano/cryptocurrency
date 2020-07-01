@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.testapp.cryptowallet.model.CryptoCurrency;
-import org.testapp.cryptowallet.model.Symbolizable;
 import org.testapp.cryptowallet.pagination.Page;
 
 public interface CryptoCurrencyDao {
@@ -14,5 +13,5 @@ public interface CryptoCurrencyDao {
 	BigDecimal getRatio(String symbol1, String symbol2);
 
 	Page<CryptoCurrency> getAll(int offset, int size);
-	
+
 }

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.testapp.cryptowallet.model.BuyOrder;
 import org.testapp.cryptowallet.model.CryptoWallet;
@@ -44,7 +43,6 @@ public class CryptoWalletController {
 		@ApiResponse(code=500, message = "An error occurred while retrieving the wallet's data")
 	})
 	public CryptoWallet getCryptoWallet(@PathVariable("id") String id) {
-		// TODO use parameter to return full info ??
 		CryptoWallet wallet = walletService.getById(id);
 		return wallet;
 	}

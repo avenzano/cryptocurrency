@@ -13,5 +13,7 @@ public interface UserDao {
 	void clearAccounts();
 
 	void clearWallets();
+
+	User findByUsername(String username);
 	
 }

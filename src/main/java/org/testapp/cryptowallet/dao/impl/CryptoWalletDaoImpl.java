@@ -3,8 +3,6 @@ package org.testapp.cryptowallet.dao.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Component;
 import org.testapp.cryptowallet.dao.CryptoWalletDao;
 import org.testapp.cryptowallet.model.CryptoWallet;

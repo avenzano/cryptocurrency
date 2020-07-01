@@ -41,6 +41,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User signInUser(User newUser) {
+		User oldUser = userDao.findByUsername(newUser.getUsername());
+		if ( oldUser != null ) {
+			throw new IllegalArgumentException("A user with username '"+newUser.getUsername()+"' already exists!");
+		}
 		newUser.setJoinDate(LocalDate.now());
 		newUser.setDeposits(new ArrayList<>());
 		newUser.setWallets(new ArrayList<>());
@@ -67,7 +71,7 @@ public class UserServiceImpl implements UserService {
 		} else {
 			amount = deposit.getAmount();
 		}
-		account.setBalance(account.getBalance().add(amount));
+		account.add(amount);
 	}
 
 	/**

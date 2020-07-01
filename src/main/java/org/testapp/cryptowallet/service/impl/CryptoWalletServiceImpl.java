@@ -3,7 +3,6 @@ package org.testapp.cryptowallet.service.impl;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -21,6 +20,7 @@ import org.testapp.cryptowallet.model.OutOrder;
 import org.testapp.cryptowallet.model.TransferOrder;
 import org.testapp.cryptowallet.model.User;
 import org.testapp.cryptowallet.service.CryptoWalletService;
+import org.testapp.cryptowallet.service.WalletIdGeneratorService;
 
 @Service
 public class CryptoWalletServiceImpl implements CryptoWalletService {
@@ -33,6 +33,9 @@ public class CryptoWalletServiceImpl implements CryptoWalletService {
 	
 	@Autowired
 	private CryptoCurrencyDao currencyDao;
+	
+	@Autowired
+	private WalletIdGeneratorService idGenerator;
 
 	@Override
 	@Cacheable("wallets")
@@ -44,25 +47,13 @@ public class CryptoWalletServiceImpl implements CryptoWalletService {
 //	@CacheEvict(value="wallets", key = "#wallet.username")
 	public CryptoWallet create(CryptoWallet wallet) {
 		// TODO validations
-		wallet.setId(createUniqueId());
+		wallet.setId(idGenerator.generateWalletId());
 		wallet.setCreated(LocalDateTime.now());
 		User owner = userDao.getByUsername(wallet.getUsername());
-		owner.getWallets().add(wallet);
+		owner.addWallet(wallet);
 		return walletDao.save(wallet);
 	}
 	
-	private String createUniqueId() {
-		for (int i = 0; i < 3; i++) {
-			String uuid = UUID.randomUUID().toString().replace("-", "");
-			CryptoWallet wallet = walletDao.findById(uuid);
-			if ( wallet == null) {
-				return uuid;
-			}
-		}
-		// should never happen, but just in case..
-		throw new IllegalStateException("Cannot generate wallet ID: too many UUID collisions");
-	}
-
 	@Override
 	@CachePut("wallets")
 	public CryptoWallet update(CryptoWallet wallet) {

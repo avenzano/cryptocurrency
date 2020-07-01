@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -44,20 +45,24 @@ public class CryptoCurrencyDaoImpl implements CryptoCurrencyDao {
 	
 	@Value("${org.testapp.cryptowallet.api-key}")
 	private String key;
+
+	@Value("${org.testapp.cryptowallet.def-target-symbols}")
+	private String defaultTargetSymbols;
 	
 	@Override
 	public BigDecimal getRatio(String symbol1, String symbol2) {
 		String pricesObj = getPrices(symbol1, symbol2);
 		ObjectMapper om = new ObjectMapper();
+		BigDecimal ratio = null;
 		try {
 			JsonNode root = om.readTree(pricesObj);
 			checkError(root, symbol1, symbol2);
 			String ratioStr = root.get(symbol1).get(symbol2).asText();
-			return new BigDecimal(ratioStr);
+			ratio = new BigDecimal(ratioStr);
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			throw new MissingCoinDataException(symbol1, ErrorType.NO_PRICE, "There is no price ratio between coins "+symbol1+" and "+symbol2);
 		}
-		return null;
+		return ratio;
 	}
 	
 	/**
@@ -113,6 +118,8 @@ public class CryptoCurrencyDaoImpl implements CryptoCurrencyDao {
 				CryptoCurrency cc = new CryptoCurrency(coinData.getId(), coinData.getCoinName(), coinData.getSymbol());
 				cachedCurrencies.add(cc);
 			}
+//			Collections.sort(cachedCurrencies, CryptoCurrency.SYMBOL_COMPARATOR);
+			cachedCurrencies.sort(Comparator.comparing(CryptoCurrency::getSymbol));
 			lastAccess = LocalDateTime.now();
 		}
 		return cachedCurrencies;
@@ -125,7 +132,9 @@ public class CryptoCurrencyDaoImpl implements CryptoCurrencyDao {
 	 * @return
 	 */
 	private void setCryptoCurrencyPrices(List<CryptoCurrency> currencies) {
-		Map<String, Map<String, BigDecimal>> id2Prices = currencies.stream().collect(Collectors.toMap(CryptoCurrency::getSymbol, CryptoCurrency::getPrices));
+		Map<String, Map<String, BigDecimal>> id2Prices = 
+				currencies.stream()
+					.collect(Collectors.toMap(CryptoCurrency::getSymbol, CryptoCurrency::getPrices));
 		// Note: since the API allows a list of CryptoCurrencies up to 300 characters, i need to split it if required
 		StringBuilder strb = new StringBuilder();
 		id2Prices.keySet().forEach( symbol -> {
@@ -150,6 +159,13 @@ public class CryptoCurrencyDaoImpl implements CryptoCurrencyDao {
 		return response.getBody();
 	}
 	
+//	private String getAllPrices(String srcSymbols) {
+//		RestTemplate template = new RestTemplate();
+//		String priceUrl = "https://min-api.cryptocompare.com/data/pricemulti?fsyms="+srcSymbols+"&tsyms="+defaultTargetSymbols+"&api_key="+key;
+//		ResponseEntity<String> response = template.exchange(priceUrl, HttpMethod.GET, null, String.class);
+//		return response.getBody();
+//	}
+//	
 	private void loadPricesFromAPI(String symbolList, Map<String, Map<String, BigDecimal>> prices) {
 		RestTemplate template = new RestTemplate();
 		String priceUrl = "https://min-api.cryptocompare.com/data/pricemulti?fsyms="+symbolList+"&tsyms=USD,EUR&api_key="+key;

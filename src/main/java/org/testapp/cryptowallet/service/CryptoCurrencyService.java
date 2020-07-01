@@ -24,4 +24,5 @@ public interface CryptoCurrencyService {
 	 */
 	List<CryptoCurrency> getAvailableCurrencies(int offset, int size);
 	Page<CryptoCurrency> getAvailableCurrencies2(int offset, int size);
+
 }

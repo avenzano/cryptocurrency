@@ -50,6 +50,11 @@ public class UserDaoImpl implements UserDao {
 	}
 	
 	@Override
+	public User findByUsername(String username) {
+		return usersByUsername.get(username);
+	}
+	
+	@Override
 	public void clear() {
 		usersByUsername.clear();
 	}

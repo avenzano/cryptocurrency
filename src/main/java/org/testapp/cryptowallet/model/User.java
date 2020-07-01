@@ -45,6 +45,10 @@ public class User {
 	@ApiModelProperty(hidden = true)
 	@JsonIgnore
 	private List<Deposit> deposits;
+	
+	public void addWallet(CryptoWallet wallet) {
+		getWallets().add(wallet);
+	}
 
 	public String getId() {
 		return id;
